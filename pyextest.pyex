@@ -26,6 +26,25 @@ extend: test1	# first method
 def test1(strObject,strS1,strS2):
 	return strObject + strS1 + strS2
 
+extend:testDottedQuad
+def testDottedQuad(strObject):
+	if type(strObject) != str: return False
+	listStrings = strObject.split('.')
+	if len(listStrings) != 4: return False
+	for num in listStrings:
+		try:
+			val = int(num)
+		except:
+			return False
+		if val < 0: return False
+		if val > 255: return False
+	return True
+
+extend: shorty
+def shorty(strObject):
+	if len(strObject) < 8: return True
+	return False
+
 # Demo extended method tells how long a string is
 # -----------------------------------------------
 extend: test2 # second method
@@ -73,6 +92,16 @@ if 1:
 	print meth().test2()
 	print upup('foo').test2();print upup('bar').test2()
 	print upup('foo').test2();print upup('bar').test1(' twice',' two')
+	if upup('boink').shorty():
+		print 'Short!'
+	else:
+		print 'not Short'
+	if not upup('boink').shorty():
+		print 'Long'
+	else:
+		print 'not Long'
+	print str('127.0.0.1'.testDottedQuad())
+	print str('password'.testDottedQuad())
 
 # Here's a use at the 0-indent level
 # ----------------------------------

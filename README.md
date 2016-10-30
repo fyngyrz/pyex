@@ -37,10 +37,21 @@ Here's a for instance. Say you have a method that takes a string object
 and validates that it is a dotted quad and you want to be able to use it
 as a method on strings. Here's what you write:
 
-	extend: testDottedQuad
-    def testDottedQuad(strObject):
-		if (...) return True
-		return False
+```Python
+extend:testDottedQuad
+def testDottedQuad(strObject):
+	if type(strObject) != str: return False
+	listStrings = strObject.split('.')
+	if len(listStrings) != 4: return False
+	for num in listStrings:
+		try:
+			val = int(num)
+		except:
+			return False
+		if val < 0: return False
+		if val > 255: return False
+	return True
+```
 
 Now, at some point, you have a string in your program you'd like to
 validate. Here are some of the things you can do in pyex:
