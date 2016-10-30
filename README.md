@@ -11,11 +11,12 @@ This is a Python v2 project. A v3 Python version, if you want it, is up
 to you at this point.
 
 ## Somewhat More Verbosely
-This project grew, somewhat indirectly, from my annoyance with Python that it
-does not provide the ability to extend the built-in classes, particularly
-the string class. I have often wanted to just do something to a string as a
-method, mainly -- and I know this is a simple thing, but -- mainly because
-I consistently tend to think this way...
+
+This project grew indirectly from my annoyance with Python that it does
+not provide the ability to extend the built-in classes, particularly the
+string class. I have often wanted to just do something to a string as a
+method, mainly -- and I know this is a simple thing, but -- mainly
+because I consistently tend to think this way...
 
     x = 'foo'.upper()
 
@@ -77,9 +78,12 @@ if not dq.testDottedQuad():
 dq = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
 ```
 
-Syntactically speaking, you can use these extended methods on strings,
-functions that return strings, and variables that contain strings as if
-the methods are actual members of the string class.
+Syntactically speaking, you can use these as extended methods on
+strings, functions that return strings, and variables that contain
+strings as if the methods were actual members of the string class. They
+aren't, of course, so it's advisable to do some checking inside your
+methods to make sure that they're receiving the kind of object they
+expect.
 
 The process is simple. First, you write a `.pyex` file that contains your
 Python, plus this extended syntax. Then you run it through `pyex.py`.
@@ -103,6 +107,8 @@ Basically that's it. Typing `pyex.py` by itself will generate help text.
 | pyex.py myStuff.pyex -o herStuff | myStuff.pyex --> herStuff.py |
 | pyex.py myStuff.pyex -o hisStuff.py | myStuff.pyex --> hisStuff.py |
 | pyex.py myStuff -c | myStuff.pyex --> myStuff.py + your code inserted as comments in myStuff.py |
+| pyex.py myStuff -c -b | myStuff.pyex --> myStuff.py + your code inserted as comments with leading blank lines in myStuff.py |
+| pyex.py myStuff -v -b | myStuff.pyex --> myStuff.py + verbose dump of progress |
 | pyex.py | You get a bunch of help about the options |
 
 ## Testing
