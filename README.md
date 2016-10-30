@@ -66,8 +66,9 @@ if not dq.testDottedQuad():
 dq = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
 ```
 
-Basically, you can use these extended methods on strings, functions, and
-variables as if it was an actual member of the string class.
+Syntactically speaking, you can use these extended methods on strings,
+functions that return strings, and variables that contain strings as if
+the methods are actual members of the string class.
 
 The process is simple. First, you write a .pyex file that contains your
 Python, plus this extended syntax. Then you run it through pyex.py.
