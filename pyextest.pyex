@@ -31,11 +31,9 @@ def testDottedQuad(strObject):
 	if type(strObject) != str: return False
 	listStrings = strObject.split('.')
 	if len(listStrings) != 4: return False
-	for num in listStrings:
-		try:
-			val = int(num)
-		except:
-			return False
+	for strNum in listStrings:
+		try:	val = int(strNum)
+		except:	return False
 		if val < 0: return False
 		if val > 255: return False
 	return True
@@ -102,6 +100,7 @@ if 1:
 		print 'not Long'
 	print str('127.0.0.1'.testDottedQuad())
 	print str('password'.testDottedQuad())
+	print str('4'.testDottedQuad())
 
 # Here's a use at the 0-indent level
 # ----------------------------------

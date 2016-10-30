@@ -43,11 +43,9 @@ def testDottedQuad(strObject):
 	if type(strObject) != str: return False
 	listStrings = strObject.split('.')
 	if len(listStrings) != 4: return False
-	for num in listStrings:
-		try:
-			val = int(num)
-		except:
-			return False
+	for strNum in listStrings:
+		try:	val = int(strNum)
+		except:	return False
 		if val < 0: return False
 		if val > 255: return False
 	return True
