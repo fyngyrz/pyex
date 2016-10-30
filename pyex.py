@@ -26,6 +26,7 @@ OPENSQUARE = 11
 CLOSESQUARE = 12
 COLON = 13
 SEMICOLON = 14
+SPLAT = 15
 
 
 def isWhiteSpace(strChar):
@@ -61,7 +62,7 @@ def pfail(intIndex,intLineNumber,strLine):
 	print strLine
 
 def tokenClasser(intToken):
-	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON
+	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON,SPLAT
 
 	if intToken == NUMBER: return 'number'
 	if intToken == STRING: return 'string'
@@ -77,6 +78,7 @@ def tokenClasser(intToken):
 	if intToken == CLOSESQUARE: return 'closeSquare'
 	if intToken == SEMICOLON: return 'semiColon'
 	if intToken == COLON: return 'colon'
+	if intToken == SPLAT: return 'splat'
 	return 'unknownTokenType'
 
 def tokenReader(listClasses):
@@ -90,7 +92,7 @@ def tokenReader(listClasses):
 # World's dumbest Pythonesque tokenizer
 # -------------------------------------
 def tokenizer(strLine,intLineNumber):
-	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON
+	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON,SPLAT
 	listTokens = []
 	listTokenClasses = []
 	strToken = ''
@@ -172,6 +174,11 @@ def tokenizer(strLine,intLineNumber):
 					listTokenClasses += [COLON]
 					listTokens += [strChar]
 					intLastMode = COLON
+					strChar = ''
+				elif strChar == '!':
+					listTokenClasses += [SPLAT]
+					listTokens += [strChar]
+					intLastMode = SPLAT
 					strChar = ''
 				elif strChar == ';':
 					listTokenClasses += [SEMICOLON]
@@ -318,7 +325,7 @@ def pass1(intLineNumber,strLine,fhFilehandle=None):
 		listMethods += [strMethodName]
 
 def reTokenize(listTokens,listClasses,listMethods):
-	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON
+	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON,SPLAT
 	intLength = len(listTokens)
 	if intLength < 2: return listTokens
 	for i in range(1,intLength):

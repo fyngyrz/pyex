@@ -31,11 +31,11 @@ except for two "little" things.
 The first is that you can write a method and attach it to any class
 object it is written to understand.
 
-The second is that you declare this with a tiny bir of new syntax.
+The second is that you declare this with a tiny bit of new syntax.
 
 Here's a for instance. Say you have a method that takes a string object
 and validates that it is a dotted quad and you want to be able to use it
-as a mthod on strings. Here's what you do:
+as a method on strings. Here's what you write:
 
 	extend: testDottedQuad
     def testDottedQuad(strObject):
