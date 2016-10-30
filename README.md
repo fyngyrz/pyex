@@ -2,9 +2,9 @@
 
 ## TLDR
 
-It's a preprocessor. You write a `.pyex` file in just slightly extended
-Python, then pyex.py processes that into Python in the actual form
-Python wants, all without monkeypatching or otherwise compromising
+`pyex` is a preprocessor. You write a `.pyex` file in just slightly
+extended Python, then `pyex.py` processes that into Python in the actual
+form Python wants, all without monkeypatching or otherwise compromising
 execution reliability.
 
 This is a Python v2 project. A v3 Python version, if you want it, is up
@@ -33,10 +33,10 @@ even if it was impossible in Python, who says it has to _be_ Python?
 There's a ton of functionality in the C language that comes from a
 preprocessor; why not a preprocessor for Python?
 
-And so... pyex.
+And so... `pyex`.
 
 pyex means `Python, Extended` and that's exactly what it is. You write
-using pyex syntax -- which is exactly the same as Python syntax --
+using `pyex` syntax -- which is exactly the same as Python syntax --
 except for two "little" things.
 
 The first is that you can write a method and attach it to any class
@@ -63,7 +63,7 @@ def testDottedQuad(strObject):
 ```
 
 Now, at some point, you have a string in your program you'd like to
-validate. Here are some of the things you can do in pyex with the
+validate. Here are some of the things you can do via `pyex` with the
 above in place:
 
 ```Python
@@ -81,29 +81,29 @@ Syntactically speaking, you can use these extended methods on strings,
 functions that return strings, and variables that contain strings as if
 the methods are actual members of the string class.
 
-The process is simple. First, you write a .pyex file that contains your
-Python, plus this extended syntax. Then you run it through pyex.py.
-pyex.py, in turn, will produce an output file in pure Python that has
+The process is simple. First, you write a `.pyex` file that contains your
+Python, plus this extended syntax. Then you run it through `pyex.py`.
+`pyex.py`, in turn, will produce an output file in pure Python that has
 changed the syntax to be normal function call based; this is the final
 end product, what you actually run.
 
-pyex strips comments, although if you ask it to, it will put your
+`pyex` strips comments, although if you ask it to, it will put your
 original lines in as comments above the generated lines so you can
-examine the metamorphosis from pyex to Python.
+examine the metamorphosis from `pyex` to Python.
 
-Basically that's it. pyex by itself will generate help text.
+Basically that's it. Typing `pyex.py` by itself will generate help text.
 
 ## Example Use
 
 | Console input | Result |
 | -------- | ------------ |
-| pyex myStuff | myStuff.pyex --> myStuff.py |
-| pyex myStuff.pyex | myStuff.pyex --> myStuff.py |
-| pyex myStuff -o yourStuff | mystuff.pyex --> yourStuff.py |
-| pyex myStuff.pyex -o herStuff | myStuff.pyex --> herStuff.py |
-| pyex myStuff.pyex -o hisStuff.py | myStuff.pyex --> hisStuff.py |
-| pyex myStuff -c | myStuff.pyex --> myStuff.py + your code inserted as comments in myStuff.py |
-| pyex | You get a bunch of help about the options |
+| pyex.py myStuff | myStuff.pyex --> myStuff.py |
+| pyex.py myStuff.pyex | myStuff.pyex --> myStuff.py |
+| pyex.py myStuff -o yourStuff | mystuff.pyex --> yourStuff.py |
+| pyex.py myStuff.pyex -o herStuff | myStuff.pyex --> herStuff.py |
+| pyex.py myStuff.pyex -o hisStuff.py | myStuff.pyex --> hisStuff.py |
+| pyex.py myStuff -c | myStuff.pyex --> myStuff.py + your code inserted as comments in myStuff.py |
+| pyex.py | You get a bunch of help about the options |
 
 ## Testing
 Executing `test_pyex.py` will generate `pyextest.py` from `pyextest.pyex`
@@ -111,6 +111,15 @@ and compare the result with `expected.py`. If the results match, then
 pyex.py is working at least as well for you as it does for me. If they
 do _not_ match, a list of the differences will be provided and a warning
 generated.
+
+## Files
+
+* pyex.py -- the preprocessor
+* pyextest.pyex -- a test file you can run through pyex.py
+* pyex.syntax -- a syntax file for Midnite Commander
+* README.md -- this file
+* test_pyex.py -- unit test
+* expected.py -- base result for successful unit test
 
 ## Project Details
 ```
@@ -136,11 +145,3 @@ Most particularly, string.
 	  Status: BETA
 ```
 
-## Files
-
-* pyex.py -- the preprocessor
-* pyextest.pyex -- a test file you can run through pyex.py
-* pyex.syntax -- a syntax file for Midnite Commander
-* README.md -- this file
-* test_pyex.py -- unit test
-* expected.py -- base result for successful unit test
