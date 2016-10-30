@@ -28,7 +28,6 @@ COLON = 13
 SEMICOLON = 14
 SPLAT = 15
 
-
 def isWhiteSpace(strChar):
 	if strChar in '\t\n\r ': return 1
 	return 0
@@ -459,6 +458,9 @@ def help(strName):
 	print '[ -r] report setup before processing'
 	print '[ -x] do not process (intended for use with [ -r])'
 	raise SystemExit
+
+# Code Execution Begins here (other than setting up the globals up top)
+# ---------------------------------------------------------------------
 
 # Basic argument sanity checking
 # ------------------------------
