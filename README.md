@@ -103,3 +103,10 @@ Most particularly, string.
      Dev Env: OS X 10.6.8, Python 2.6.1
 	  Status:  BETA
 ```
+
+## Files
+
+* pyex.py -- the preprocessor
+* pyextest.pyex -- a test file you can run through pyex.py
+* pyex.syntax -- a syntax file for Midnite Commander
+* README.md -- this file
