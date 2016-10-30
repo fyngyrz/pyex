@@ -1,0 +1,79 @@
+#!pyex.py
+#!/usr/bin/python
+
+# The demos are extended string methods. The can be tacked onto strings, variables, and functions
+# The extend declaration can be anywhere in the file; it's caught on a pass prior to using
+# anything. So if you like it better up by the method, that's fine. I've commented them
+# out here and put them by the methods. It's a very simple syntax:
+#
+#         +-- must begin in column 1
+#         |
+#         V
+#         extend:[whitespace]methodName[whitespace][#comment]
+#
+# so extend, followed by a colon, optional whitespace, then the method name. Comments optional
+# -------------------------------------------------------------------------------------------
+#extend: test1
+#extend: test2
+
+# Just like a normal method, the first parameter is the
+# object it was called on. These are written for strings
+# So that's what they catch.
+# ------------------------------------------------------
+# Demo extended method appends two strings to strObject
+# ------------------------------------------------------
+extend: test1	# first method
+def test1(strObject,strS1,strS2):
+	return strObject + strS1 + strS2
+
+# Demo extended method tells how long a string is
+# -----------------------------------------------
+extend: test2 # second method
+def test2(strObject):
+	return '"'+strObject+'"' + ' is ' + str(len(strObject)) + ' characters long'
+
+# Normal method returns 'blue'
+# ----------------------------
+def meth():
+	return 'blue'
+
+# Normal method returns 'white'
+# -----------------------------
+def zombie():
+	return 'white'
+
+def upup(strObject):
+	return strObject.upper()
+
+# Here's a use of the method within a function
+# --------------------------------------------
+def test():
+	print 'bah:' # Here's a comment
+	print 'foo:'.test1(" there's a method",' to my madness')
+	print 'bing:'.test2()
+
+test()
+
+# more cases
+# ----------
+if 1:
+	x = 'a'
+	print x.test1('b','c')
+	fruit = 'cherries'
+	print fruit.test1(' ripe',' and luscious')
+	print meth().test2();print zombie().test2()
+	print upup(meth()).test2()
+	print upup(meth()).test1(' red',' green')
+	print upup(str(['1','2','3'])).test2()
+	print upup(str({1:'a',2:'b',3:'c'})).test2()
+	z = {1:'ab',2:'bc',3:'cd'}
+	print upup(str(z[2])).test2()
+	y = {'a':1,'b':2,'c':3}
+	print upup(str(z[y['c']])).test2()
+	print meth().test2()
+	print upup('foo').test2();print upup('bar').test2()
+	print upup('foo').test2();print upup('bar').test1(' twice',' two')
+
+# Here's a use at the 0-indent level
+# ----------------------------------
+print "bar:".test1(' but',' no dir() and no help()')
