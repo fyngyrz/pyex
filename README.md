@@ -99,6 +99,7 @@ Most particularly, string.
                  responsibilities and any subsequent consequences are entirely yours. Have you
                  written your congresscritter about patent and copyright reform yet?
   Incep Date: October 29th, 2016     (for Project)
+ Last Update: October 29th, 2016     (for Project)
      Dev Env: OS X 10.6.8, Python 2.6.1
 	  Status:  BETA
 ```
