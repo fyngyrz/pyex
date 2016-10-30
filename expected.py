@@ -2,7 +2,7 @@
 def test1(strObject,strS1,strS2):
 	return strObject + strS1 + strS2
 def testDottedQuad(strObject):
-	if type(strObject) != str: return False
+	if not isinstance(strObject, basestring): return False
 	listStrings = strObject.split('.')
 	if len(listStrings) != 4: return False
 	for strNum in listStrings:

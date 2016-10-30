@@ -52,7 +52,7 @@ as a method on strings. Here's something you might write:
 ```Python
 extend:testDottedQuad
 def testDottedQuad(strObject):
-	if type(strObject) != str: return False
+	if not isinstance(strObject, basestring): return False
 	listStrings = strObject.split('.')
 	if len(listStrings) != 4: return False
 	for strNum in listStrings:
