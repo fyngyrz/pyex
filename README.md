@@ -36,7 +36,7 @@ preprocessor; why not a preprocessor for Python?
 
 And so... `pyex`.
 
-pyex means `Python, Extended` and that's exactly what it is. You write
+`pyex` means `Python, Extended` and that's exactly what it is. You write
 using `pyex` syntax -- which is exactly the same as Python syntax --
 except for two "little" things.
 
@@ -47,7 +47,7 @@ The second is that you declare this with a tiny bit of new syntax.
 
 Here's a for-instance. Say you have a method that takes a string object
 and validates that it is a dotted quad and you want to be able to use it
-as a method on strings. Here's what you write:
+as a method on strings. Here's something you might write:
 
 ```Python
 extend:testDottedQuad
@@ -75,7 +75,9 @@ dq = '216.126.621.5'
 if not dq.testDottedQuad():
 	throwWarning();
 
-dq = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
+dqt = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
+if dqt:
+	print 'well, that was fun'
 ```
 
 Syntactically speaking, you can use these as extended methods on
