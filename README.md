@@ -1,4 +1,7 @@
-# [pyex](pyex.py) -- Adds static methods that can be added to class str, etc.
+# [pyex](pyex.py) -- Allows for methods that can be used with class str, etc.
+
+TLDR: It's a preprocessor. You write the way you want, then it makes Python
+like Python wants.
 
 This project grew, somewhat indirectly, from my annoyance with Python that it
 does not provide the ability to extend the built-in classes, particularly
