@@ -56,14 +56,16 @@ def testDottedQuad(strObject):
 Now, at some point, you have a string in your program you'd like to
 validate. Here are some of the things you can do in pyex:
 
-	if '192.168.1.100'.testDottedQuad():
-		doSomething()
+```Python
+if '192.168.1.100'.testDottedQuad():
+	doSomething()
 
-    dq = '216.126.621.5'
-	if not dq.testDottedQuad():
-		throwWarning();
+dq = '216.126.621.5'
+if not dq.testDottedQuad():
+	throwWarning();
 
-	dq = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
+dq = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
+```
 
 Basically, you can use these extended methods on strings, functions, and
 variables as if it was an actual member of the string class.
