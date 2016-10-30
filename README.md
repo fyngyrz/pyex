@@ -82,7 +82,7 @@ Here are some examples of use:
 | pyex | You get a bunch of help about the options |
 
 ```
-Class to provide extended Python syntax for methods on built-in classes
+Application to provide extended Python syntax for methods on built-in classes
 Most particularly, string.
 
       Author: fyngyrz  (Ben)
