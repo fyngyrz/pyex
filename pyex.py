@@ -19,28 +19,50 @@ boolBlankLines		= False
 # class tokens for parsing and human-readability
 # ----------------------------------------------
 class sTokens:
-	NUMBER = 1
-	STRING = 2
-	WHITESPACE = 3
-	NAME = 4
-	COMMA = 5
-	OPENPAREN = 6
-	CLOSEPAREN = 7
-	EQUALS = 8
-	OPENBRACE = 9
-	CLOSEBRACE = 10
-	OPENSQUARE = 11
-	CLOSESQUARE = 12
-	COLON = 13
-	SEMICOLON = 14
-	SPLAT = 15
-	LESSTHAN = 16
-	GREATERTHAN = 17
+	NUMBER		=  1
+	STRING		=  2
+	WHITESPACE	=  3
+	NAME		=  4
+	COMMA		=  5
+	OPENPAREN	=  6
+	CLOSEPAREN	=  7
+	EQUALS		=  8
+	OPENBRACE	=  9
+	CLOSEBRACE	= 10
+	OPENSQUARE	= 11
+	CLOSESQUARE	= 12
+	COLON		= 13
+	SEMICOLON	= 14
+	SPLAT		= 15
+	LESSTHAN	= 16
+	GREATERTHAN	= 17
+	ASTERISK	= 18
+	PLUSSIGN	= 19
+	MINUSSIGN	= 20
+	DIVIDESIGN	= 21
+	PERCENTSIGN	= 22
+	AMPERSAND	= 23
 
 st = sTokens()
 
-# Single Token details
-# --------------------
+# Single token details
+# ====================
+# ...and by "single token" I mean in the context of pyex, which isn't
+# concerned with compound tokens of the >= or && nature, only with dealing
+# with getting them out of a source code line, and then putting them back
+# the way they were found. pyex considers strings, alphanumeric
+# identifiers, whitespace and numbers as the multi-character tokens it
+# needs to be aware of.
+#
+# Technically, I could have gone with a bunch of individual whitespace
+# tokens too, as they are not significant either. But I wrote it to treat
+# them as units, and that works fine too.
+#
+# The period is a (very) special case, as it has roles in numbers, method
+# attachments, and (rarely) in the ellipsis used with multi-dimensional
+# slicing. So '.' is treated in the tokenizer in a more comprehensive way
+# than these tokens, which I mainly need to recognize as valid Python.
+# --------------------------------------------------------------------------
 listSingTok = [
 	[',',st.COMMA,'comma'],['(',st.OPENPAREN,'openParen'],
 	[')',st.CLOSEPAREN,'closeParen'],['=',st.EQUALS,'equals'],
@@ -48,62 +70,60 @@ listSingTok = [
 	['[',st.OPENSQUARE,'openSquare'],[']',st.CLOSESQUARE,'closeSquare'],
 	[':',st.COLON,'colon'],[';',st.SEMICOLON,'semiColon'],
 	['!',st.SPLAT,'splat'],['<',st.LESSTHAN,'lessThan'],
-	['>',st.GREATERTHAN,'greaterThan']
+	['>',st.GREATERTHAN,'greaterThan'],['*',st.ASTERISK,'asterisk'],
+	['+',st.PLUSSIGN,'plusSign'],['-',st.MINUSSIGN,'minusSign'],
+	['/',st.DIVIDESIGN,'divideSign'],['%',st.PERCENTSIGN,'percentSign'],
+	['&',st.AMPERSAND,'ampersand']
 ]
 
+# Produces human-readable string from token code
+# ----------------------------------------------
 def tokenClasser(intToken):
 	global st
-
 	for listTok in listSingTok:
 		if intToken == listTok[1]:
 			return listTok[2]
-
-#	if intToken == st.NUMBER:		return 'number'
-#	if intToken == st.STRING:		return 'string'
-#	if intToken == st.WHITESPACE:	return 'whiteSpace'
-#	if intToken == st.NAME:			return 'name'
-#	if intToken == st.COMMA:		return 'comma'
-#	if intToken == st.OPENPAREN:	return 'openParen'
-#	if intToken == st.CLOSEPAREN:	return 'closeParen'
-#	if intToken == st.EQUALS:		return 'equals'
-#	if intToken == st.OPENBRACE:	return 'openBrace'
-#	if intToken == st.CLOSEBRACE:	return 'closeBrace'
-#	if intToken == st.OPENSQUARE:	return 'openSquare'
-#	if intToken == st.CLOSESQUARE:	return 'closeSquare'
-#	if intToken == st.SEMICOLON:	return 'semiColon'
-#	if intToken == st.COLON:		return 'colon'
-#	if intToken == st.SPLAT:		return 'splat'
-	
 	return 'unknownTokenType'
 
+# Identifies whitespace characters
+# --------------------------------
 def isWhiteSpace(strChar):
 	if strChar in '\t\n\r\f ': return True
 	return False
 
-def isNumericStart(strChar): # starting with a '.' is treated analytically
+# Identifies numbers, which (almost) always start with
+# a digit. Except for floats; and because the '.' has
+# several other meanings in Python, it is dealt with
+# algorithmically.
+# ----------------------------------------------------
+def isNumericStart(strChar):
 	if strChar in '0123456789': return True
 	return False
 
+# Identifies numbers in positions past the first
+# digit or '.'
+# ----------------------------------------------
 def isNumeric(strChar): # ints, hex/oct/bin, floats
 	if strChar.upper() in '0123456789OXABCDEFL+-': return True
 	return False
 
+# Identifies characters that can start a name legally
+# ---------------------------------------------------
 def isLegalNameStart(strChar):
 	if strChar.lower() in 'abcdefghijklmnopqrstuvwxyz_': return True
 	return False
 
+# Identifies characters that can be in a name past
+# the starting character
+# ------------------------------------------------
 def isLegalNamePastStart(strChar):
 	if isLegalNameStart(strChar) == 1: return True
 	if isNumeric(strChar) == 1: return True
 	if strChar == '_': return True
 	return False
 
-def isLegalName(strName):
-	for strChar in strName:
-		if strChar.lower() in 'abcdefghijklmnopqrstuvwxyz0123456789_':
-			return True
-	return False
-
+# Helper for parsing fail diagnosis
+# ---------------------------------
 def pfail(intIndex,intLineNumber,strLine):
 	print 'Parsing Failed at line '+str(intLineNumber)
 	strOut = ' ' * intIndex
@@ -112,6 +132,9 @@ def pfail(intIndex,intLineNumber,strLine):
 	strLine = strLine.replace('\t',' ')
 	print strLine
 
+# Generates a list of human-readable token names
+# from a class list
+# -----------------
 def tokenReader(listClasses):
 	out = ''
 	for tok in listClasses:
@@ -120,8 +143,15 @@ def tokenReader(listClasses):
 		out = out[:-1]
 	return out
 
-# World's dumbest Pythonesque tokenizer
-# -------------------------------------
+# This takes a line of Python code and converts it into
+# two lists: The first is a list containing what pyex
+# sees as atomic tokens. Strings, names, numbers,
+# whitespace, special characters. The second is a list
+# of equal length that contains the identities of each
+# of the tokens that can be used to parse the line,
+# re-arranging the tokes, without reference to what
+# is actually in each token.
+# ----------------------------------------------------
 def tokenizer(strLine,intLineNumber):
 	global st
 	global listSingTok
@@ -168,10 +198,15 @@ def tokenizer(strLine,intLineNumber):
 						boolOpenToken = True
 					else: # might be the beginning of a number...
 						boolHalt = False
-						if intIndex < intLineLen-1: # if room to lookahead
+						# if room to look +/- 1 character here:
+						if intIndex < intLineLen-1 and intIndex > 0:
 							if not isNumericsStart(strLine[intIndex+1]): # and not number
 								boolHalt = True
-						else: # period at end of line
+							# or an elipsis: '...' - rare, but part of Python
+							elif not (strLine[intIndex+1] == '.' or \
+										strLine[intIndex-1] == '.'):
+								boolHalt = True
+						else: # period at start or end of line
 							boolHalt = True
 						if boolHalt:
 							print 'stray "." character in line '+str(intLineNumber)
@@ -310,17 +345,26 @@ def tokenizer(strLine,intLineNumber):
 		strLastChar = strChar
 	return listTokenClasses,listTokens
 
+# I get tired of writing sys.stdout.write(yadda)
+# ----------------------------------------------
 def w(strParam):
 	sys.stdout.write(strParam)
 
+# I get tired of writing "print", too. :)
+# ---------------------------------------
 def p(strParam):
 	print strParam
 
+# Prints a formatted line number, followed by the line
+# ----------------------------------------------------
 def pln(intLineNumber,strLine):
 	strOut = '%6d' % (intLineNumber)
 	w(strOut+': ')
 	p(strLine)
 
+# This covers various failures WRT to
+# invocation of pyex.
+# -----------------------------------
 def error(intErrorNum,strData='',intLineNumber=-1):
 	global strSourceExt
 	if intErrorNum == 1:
@@ -347,8 +391,12 @@ def error(intErrorNum,strData='',intLineNumber=-1):
 		print ''
 	raise SystemExit
 
-# Parse out the method names
-# --------------------------
+# This is the first of two passes. It receives a series
+# of lines from the input file, and locates the 'extend: yadda'
+# statements, building a list of methods so identified. These
+# will be used in the second pass to identify uses of methods
+# that are extended, while ignoring methods that are not.
+# -------------------------------------------------------------
 def pass1(intLineNumber,strLine,fhFilehandle=None):
 	global listMethods
 	if strLine[0] != '#' and len(re.findall('extend:',strLine)) == 1:
@@ -357,6 +405,10 @@ def pass1(intLineNumber,strLine,fhFilehandle=None):
 			error(6,strLine,intLineNumber)
 		listMethods += [strMethodName]
 
+# This is the parser that takes the tokenized line and
+# replaces pyex's fabulous extended syntax with Python's
+# "having a Monday" mundane function calls.
+# ----------------------------------------------------
 def reTokenize(listTokens,listClasses,listMethods):
 	global st
 	intLength = len(listTokens)
@@ -423,21 +475,22 @@ def reTokenize(listTokens,listClasses,listMethods):
 								listTokens[j] = tmp # emplace method at from this mess
 	return listTokens
 
+# Takes an input line, tokenizes it, changes the
+# object-attached methods into function calls, and
+# the re-assembles the line in Python-compatible
+# format
+# ------------------------------------------------
 def parseOutMethod(strLineLocal,listMethods,intLineNumber):
 	listClasses,listTokens = tokenizer(strLineLocal,intLineNumber)
-	strTokenList = ''
-	strPrePre = '['
-	for tok in listClasses:
-		strTokenList += strPrePre+tokenClasser(tok)
-		strPrePre = ','
-	strTokenList += ']'
 	listTokens = reTokenize(listTokens,listClasses,listMethods)
 	foo = ''.join(listTokens)
 	return foo
 
-# Method names are defined
-# Replace method-style invocations with function-style invocations
-# ----------------------------------------------------------------
+# This is pass two. It works through all the lines in the .pyex
+# file and processes them using parseOutMethod(), above. It
+# then actually writes them (and comments if that's wsitched on)
+# to the output, and optionally the console as well.
+# -------------------------------------------------------------
 def pass2(intLineNumber,strLine,fhWriteFile):
 	global boolCommentSource
 	if len(re.findall('extend:',strLine)) == 1:
@@ -487,6 +540,8 @@ def dopass(fhFile,funcPass,fhWriteFile=None):
 			funcPass(intLineNumber,strLine,fhWriteFile)
 		intLineNumber += 1
 
+# console-level command syntax help()
+# -----------------------------------
 def help(strName):
 	print strName+' Usage:'
 	print strName+' source.pyex[ -o newname[.py]][ -p][ -e][ -c]'
@@ -506,8 +561,8 @@ def help(strName):
 # --------------------------------------------------------------------- #
 # ===================================================================== #
 
-# Basic argument sanity checking
-# ------------------------------
+# Parse out command line arguments
+# --------------------------------
 strWriteFileName = ''
 strSourceFile = ''
 if len(sys.argv) < 2:
@@ -608,6 +663,9 @@ try:
 except:
 	error(5,strSourceFile)
 
+# This is kind of like a symbol table dump
+# from an assembler or linker
+# ----------------------------------------
 if boolReportMethods:
 	if boolReportPasses: print
 	print 'Methods:'

@@ -108,7 +108,7 @@ Basically that's it. Typing `pyex.py` by itself will generate help text.
 | pyex.py myStuff.pyex -o hisStuff.py | myStuff.pyex --> hisStuff.py |
 | pyex.py myStuff -c | myStuff.pyex --> myStuff.py + your code inserted as comments in myStuff.py |
 | pyex.py myStuff -c -b | myStuff.pyex --> myStuff.py + your code inserted as comments with leading blank lines in myStuff.py |
-| pyex.py myStuff -v -b | myStuff.pyex --> myStuff.py + verbose dump of progress |
+| pyex.py myStuff -v -b | myStuff.pyex --> myStuff.py + verbose dump of progress incorporating blank lines between conversions |
 | pyex.py | You get a bunch of help about the options |
 
 ## Testing
