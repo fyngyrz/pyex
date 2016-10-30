@@ -54,7 +54,8 @@ def testDottedQuad(strObject):
 ```
 
 Now, at some point, you have a string in your program you'd like to
-validate. Here are some of the things you can do in pyex:
+validate. Here are some of the things you can do in pyex with the
+above in place:
 
 ```Python
 if '192.168.1.100'.testDottedQuad():
