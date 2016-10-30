@@ -1,9 +1,14 @@
 # [pyex](pyex.py) -- Allows for methods that can be used with class str, etc.
 
 ## TLDR
-It's a preprocessor. You write the way you want, then it makes Python
-like Python wants. It's a Python v2 project. A v3 Python version, if you want
-it, is up to you.
+
+It's a preprocessor. You write a `.pyex` file in just slightly extended
+Python, then pyex.py processes that into Python in the actual form
+Python wants, all without monkeypatching or otherwise compromising
+execution reliability.
+
+This is a Python v2 project. A v3 Python version, if you want it, is up
+to you at this point.
 
 ## Somewhat More Verbosely
 This project grew, somewhat indirectly, from my annoyance with Python that it
