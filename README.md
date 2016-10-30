@@ -5,7 +5,7 @@ It's a preprocessor. You write the way you want, then it makes Python
 like Python wants. It's a Python v2 project. A v3 Python version, if you want
 it, is up to you.
 
-## The Long Version
+## Somewhat More Verbosely
 This project grew, somewhat indirectly, from my annoyance with Python that it
 does not provide the ability to extend the built-in classes, particularly
 the string class. I have often wanted to just do something to a string as a
