@@ -60,7 +60,7 @@ validate. Here are some of the things you can do in pyex:
 		doSomething()
 
     dq = '216.126.621.5'
-	if !dq.testDottedQuad():
+	if not dq.testDottedQuad():
 		throwWarning();
 
 	dq = ''.join(['127','.','0','.','0','.','1']).testDottedQuad()
