@@ -80,3 +80,25 @@ Here are some examples of use:
 | pyex myStuff.pyex -o hisStuff.py | myStuff.pyex --> hisStuff.py |
 | pyex myStuff -c | myStuff.pyex --> myStuff.py + your code inserted as comments in myStuff.py |
 | pyex | You get a bunch of help about the options |
+
+```
+Class to provide extended Python syntax for methods on built-in classes
+Most particularly, string.
+
+      Author: fyngyrz  (Ben)
+     Contact: fyngyrz@gmail.com (bugs, feature requests, kudos, bitter rejections)
+     Project: pyex.py
+    Homepage: https://github.com/fyngyrz/pyex
+     License: None. It's free. *Really* free. Defy invalid social and legal norms.
+ Disclaimers: 1) Probably completely broken. Do Not Use. You were explicitly warned. Phbbbbt.
+              2) My code is blackbox, meaning I wrote it without reference to other people's code
+              3) I can't check other people's contributions effectively, so if you use any version
+                 of aa_macro.py that incorporates accepted commits from others, you are risking
+                 the use of OPC, which may or may not be protected by copyright, patent, and the
+                 like, because our intellectual property system is pathological. The risks and
+                 responsibilities and any subsequent consequences are entirely yours. Have you
+                 written your congresscritter about patent and copyright reform yet?
+  Incep Date: October 29th, 2016     (for Project)
+     Dev Env: OS X 10.6.8, Python 2.6.1
+	  Status:  BETA
+```
