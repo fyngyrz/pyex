@@ -2,6 +2,10 @@
 
 import sys,os,re
 
+# Dev enviroment: Python 2.6.1, OS X 10.6.8
+# TAB setting for formatting as intended: 4
+# -----------------------------------------
+
 # Globals
 # -------
 strSourceExt		= '.pyex'
@@ -76,6 +80,22 @@ listSingTok = [
 	['&',st.AMPERSAND,'ampersand']
 ]
 
+# I get tired of writing sys.stdout.write(yadda)
+# ----------------------------------------------
+def w(strParam):
+	sys.stdout.write(strParam)
+
+# I get tired of writing "print", too. :)
+# However, this is also useful if someone
+# (not me) wanted to convert pyex to
+# Python3 (otherwise known as "not Python")
+# as it collects all calls to print in
+# one place. Since Python 3 broke the
+# print statement, sigh.
+# ---------------------------------------
+def p(strParam):
+	print strParam
+
 # Produces human-readable string from token code
 # ----------------------------------------------
 def tokenClasser(intToken):
@@ -125,12 +145,12 @@ def isLegalNamePastStart(strChar):
 # Helper for parsing fail diagnosis
 # ---------------------------------
 def pfail(intIndex,intLineNumber,strLine):
-	print 'Parsing Failed at line '+str(intLineNumber)
+	p('Parsing Failed at line '+str(intLineNumber))
 	strOut = ' ' * intIndex
 	strOut += '|'
-	print strOut
+	p(strOut)
 	strLine = strLine.replace('\t',' ')
-	print strLine
+	p(strLine)
 
 # Generates a list of human-readable token names
 # from a class list
@@ -209,10 +229,10 @@ def tokenizer(strLine,intLineNumber):
 						else: # period at start or end of line
 							boolHalt = True
 						if boolHalt:
-							print 'stray "." character in line '+str(intLineNumber)
+							p('stray "." character in line '+str(intLineNumber))
 							pfail(intIndex,intLineNumber,strLine)
 							tokenReader(listTokenClasses)
-							print str(listTokens)
+							p(str(listTokens))
 							raise SystemExit
 					if boolOpenToken:
 						strToken = strChar
@@ -340,20 +360,10 @@ def tokenizer(strLine,intLineNumber):
 						intLastMode = st.NUMBER
 						listTokenClasses += [st.NUMBER]
 				else: # shouldn't get here, but...
-					print 'unknown parsing state!'
+					p('unknown parsing state!')
 					raise SystemExit
 		strLastChar = strChar
 	return listTokenClasses,listTokens
-
-# I get tired of writing sys.stdout.write(yadda)
-# ----------------------------------------------
-def w(strParam):
-	sys.stdout.write(strParam)
-
-# I get tired of writing "print", too. :)
-# ---------------------------------------
-def p(strParam):
-	print strParam
 
 # Prints a formatted line number, followed by the line
 # ----------------------------------------------------
@@ -368,27 +378,27 @@ def pln(intLineNumber,strLine):
 def error(intErrorNum,strData='',intLineNumber=-1):
 	global strSourceExt
 	if intErrorNum == 1:
-		print 'pyex.py requires a source file as input'
+		p('pyex.py requires a source file as input')
 	if intErrorNum == 2:
-		print 'pyex.py requires a '+strSourceExt+' source file as input'
+		p('pyex.py requires a '+strSourceExt+' source file as input')
 	if intErrorNum == 3:
-		print '"'+strData+'" is not a complete file name'
+		p('"'+strData+'" is not a complete file name')
 	if intErrorNum == 4:
-		print '"'+strData+'" could not be opened'
+		p('"'+strData+'" could not be opened')
 	if intErrorNum == 5:
-		print '"'+strData+'" could not be closed'
+		p('"'+strData+'" could not be closed')
 	if intErrorNum == 6:
-		print 'Bad method declaration "'+strData+'" in line number '+str(intLineNumber)
+		p('Bad method declaration "'+strData+'" in line number '+str(intLineNumber))
 	if intErrorNum == 7:
-		print '"'+strData+'" could not be opened for write'
+		p('"'+strData+'" could not be opened for write')
 	if intErrorNum == 8:
-		print 'Could not chmod "'+strData+'"'
+		p('Could not chmod "'+strData+'"')
 	if intErrorNum == 9:
-		print 'Unknown Option: "'+strData+'"'
+		p('Unknown Option: "'+strData+'"')
 	if intErrorNum == 10:
-		print '-o requires a filename'
+		p('-o requires a filename')
 	if intErrorNum == 11:
-		print ''
+		p('')
 	raise SystemExit
 
 # This is the first of two passes. It receives a series
@@ -513,11 +523,11 @@ def pass2(intLineNumber,strLine,fhWriteFile):
 						fhWriteFile.write(strBlank+'# '+strLine+'\n')
 					fhWriteFile.write(strNewLine+'\n')
 					if boolVerbose:
-						print strBlank+'# '+strLine
-						print strNewLine
+						p(strBlank+'# '+strLine)
+						p(strNewLine)
 					
 			except Exception,e:
-				print str(intLineNumber) +': '+ str(e)
+				p(str(intLineNumber) +': '+ str(e))
 				raise
 		else: # comment line
 			if len(strLine) > 2:
@@ -543,16 +553,16 @@ def dopass(fhFile,funcPass,fhWriteFile=None):
 # console-level command syntax help()
 # -----------------------------------
 def help(strName):
-	print strName+' Usage:'
-	print strName+' source.pyex[ -o newname[.py]][ -p][ -e][ -c]'
-	print '[-o newname[.py]] changes source.pyex --> source.py'
-	print '                       to source.pyex --> newname.py'
-	print '[ -p] pass information will be printed'
-	print '[ -e] extended method names will be printed'
-	print '[ -c] unmodified source lines as comments in output'
-	print '[ -r] report setup before processing'
-	print '[ -x] do not process (intended for use with [ -r])'
-	print '[ -v] verbose output of each extended translation'
+	p(strName+' Usage:')
+	p(strName+' source.pyex[ -o newname[.py]][ -p][ -e][ -c]')
+	p('[-o newname[.py]] changes source.pyex --> source.py')
+	p('                       to source.pyex --> newname.py')
+	p('[ -p] pass information will be printed')
+	p('[ -e] extended method names will be printed')
+	p('[ -c] unmodified source lines as comments in output')
+	p('[ -r] report setup before processing')
+	p('[ -x] do not process (intended for use with [ -r])')
+	p('[ -v] verbose output of each extended translation')
 	raise SystemExit
 
 # ===================================================================== #
@@ -614,16 +624,16 @@ if strSourceFile[:-5] == '':
 	error(3,strSourceFile)
 
 if boolReportSetup:
-	print '       args:'+str(sys.argv)
-	print '     source:'+strSourceFile
-	print '       dest:'+strWriteFileName
-	print '     method:'+str(boolReportMethods)
-	print '     passes:'+str(boolReportPasses)
-	print '   comments:'+str(boolCommentSource)
-	print '     report:'+str(boolReportSetup)
-	print '       stop:'+str(boolDoNotProcess)
-	print '    verbose:'+str(boolVerbose)
-	print ' blanklines:'+str(boolBlankLines)
+	p('       args:'+str(sys.argv))
+	p('     source:'+strSourceFile)
+	p('       dest:'+strWriteFileName)
+	p('     method:'+str(boolReportMethods))
+	p('     passes:'+str(boolReportPasses))
+	p('   comments:'+str(boolCommentSource))
+	p('     report:'+str(boolReportSetup))
+	p('       stop:'+str(boolDoNotProcess))
+	p('    verbose:'+str(boolVerbose))
+	p(' blanklines:'+str(boolBlankLines))
 
 if boolDoNotProcess:
 	raise SystemExit
@@ -653,7 +663,7 @@ try:
 	except:
 		error(8,strParm)
 except Exception,e:
-	print str(e)
+	p(str(e))
 	error(7,strWriteFileName)
 
 # File processing ends
@@ -667,7 +677,7 @@ except:
 # from an assembler or linker
 # ----------------------------------------
 if boolReportMethods:
-	if boolReportPasses: print
-	print 'Methods:'
+	if boolReportPasses: p('')
+	p('Methods:')
 	for strMethodName in listMethods:
-		print '    '+strMethodName
+		p('    '+strMethodName)
