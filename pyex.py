@@ -12,29 +12,77 @@ boolReportPasses	= False
 boolCommentSource	= False
 boolReportSetup		= False
 boolDoNotProcess	= False
-NUMBER = 1
-STRING = 2
-WHITESPACE = 3
-NAME = 4
-COMMA = 5
-OPENPAREN = 6
-CLOSEPAREN = 7
-EQUALS = 8
-OPENBRACE = 9
-CLOSEBRACE = 10
-OPENSQUARE = 11
-CLOSESQUARE = 12
-COLON = 13
-SEMICOLON = 14
-SPLAT = 15
+boolVerbose			= False
+boolBlankLines		= False
+
+# These are token identities. They are used to
+# class tokens for parsing and human-readability
+# ----------------------------------------------
+class sTokens:
+	NUMBER = 1
+	STRING = 2
+	WHITESPACE = 3
+	NAME = 4
+	COMMA = 5
+	OPENPAREN = 6
+	CLOSEPAREN = 7
+	EQUALS = 8
+	OPENBRACE = 9
+	CLOSEBRACE = 10
+	OPENSQUARE = 11
+	CLOSESQUARE = 12
+	COLON = 13
+	SEMICOLON = 14
+	SPLAT = 15
+	LESSTHAN = 16
+	GREATERTHAN = 17
+
+st = sTokens()
+
+# Single Token details
+# --------------------
+listSingTok = [
+	[',',st.COMMA,'comma'],['(',st.OPENPAREN,'openParen'],
+	[')',st.CLOSEPAREN,'closeParen'],['=',st.EQUALS,'equals'],
+	['{',st.OPENBRACE,'openBrace'],['}',st.CLOSEBRACE,'closeBrace'],
+	['[',st.OPENSQUARE,'openSquare'],[']',st.CLOSESQUARE,'closeSquare'],
+	[':',st.COLON,'colon'],[';',st.SEMICOLON,'semiColon'],
+	['!',st.SPLAT,'splat'],['<',st.LESSTHAN,'lessThan'],
+	['>',st.GREATERTHAN,'greaterThan']
+]
+
+def tokenClasser(intToken):
+	global st
+
+	for listTok in listSingTok:
+		if intToken == listTok[1]:
+			return listTok[2]
+
+#	if intToken == st.NUMBER:		return 'number'
+#	if intToken == st.STRING:		return 'string'
+#	if intToken == st.WHITESPACE:	return 'whiteSpace'
+#	if intToken == st.NAME:			return 'name'
+#	if intToken == st.COMMA:		return 'comma'
+#	if intToken == st.OPENPAREN:	return 'openParen'
+#	if intToken == st.CLOSEPAREN:	return 'closeParen'
+#	if intToken == st.EQUALS:		return 'equals'
+#	if intToken == st.OPENBRACE:	return 'openBrace'
+#	if intToken == st.CLOSEBRACE:	return 'closeBrace'
+#	if intToken == st.OPENSQUARE:	return 'openSquare'
+#	if intToken == st.CLOSESQUARE:	return 'closeSquare'
+#	if intToken == st.SEMICOLON:	return 'semiColon'
+#	if intToken == st.COLON:		return 'colon'
+#	if intToken == st.SPLAT:		return 'splat'
+	
+	return 'unknownTokenType'
 
 def isWhiteSpace(strChar):
-	if strChar in '\t\n\r ': return 1
-	return 0
+	if strChar in '\t\n\r ': return True
+	return False
 
 def isNumeric(strChar):
-	if strChar in '0123456789': return 1
-	return 0
+	if strChar in '0123456789': return True
+	return False
 
 def isLegalNameStart(strChar):
 	if strChar.lower() in 'abcdefghijklmnopqrstuvwxyz_': return True
@@ -60,26 +108,6 @@ def pfail(intIndex,intLineNumber,strLine):
 	strLine = strLine.replace('\t',' ')
 	print strLine
 
-def tokenClasser(intToken):
-	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON,SPLAT
-
-	if intToken == NUMBER: return 'number'
-	if intToken == STRING: return 'string'
-	if intToken == WHITESPACE: return 'whiteSpace'
-	if intToken == NAME: return 'name'
-	if intToken == COMMA: return 'comma'
-	if intToken == OPENPAREN: return 'openParen'
-	if intToken == CLOSEPAREN: return 'closeParen'
-	if intToken == EQUALS: return 'equals'
-	if intToken == OPENBRACE: return 'openBrace'
-	if intToken == CLOSEBRACE: return 'closeBrace'
-	if intToken == OPENSQUARE: return 'openSquare'
-	if intToken == CLOSESQUARE: return 'closeSquare'
-	if intToken == SEMICOLON: return 'semiColon'
-	if intToken == COLON: return 'colon'
-	if intToken == SPLAT: return 'splat'
-	return 'unknownTokenType'
-
 def tokenReader(listClasses):
 	out = ''
 	for tok in listClasses:
@@ -91,7 +119,8 @@ def tokenReader(listClasses):
 # World's dumbest Pythonesque tokenizer
 # -------------------------------------
 def tokenizer(strLine,intLineNumber):
-	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON,SPLAT
+	global st
+	global listSingTok
 	listTokens = []
 	listTokenClasses = []
 	strToken = ''
@@ -105,121 +134,119 @@ def tokenizer(strLine,intLineNumber):
 	intIndex = -1
 	intLastMode = -1
 	intFlagMode = -1
-	
+	intLineLen = len(strLine)
+
 	for strChar in strLine:
 		intIndex += 1
 		while strChar != '':
+
+			# First, if we're not currently accumulating a
+			# multi-character entity, we check to see what
+			# we did last. If it was tokenize a name, a string,
+			# or close a set of parens (which might indicate
+			# a function), then we're interested to see if
+			# a period might be introducing a named extension
+			# It also might be a number such as .123 which
+			# we will not treat as a potentially extendable
+			# entity.
+			# -----------------------------------------------
 			if	boolInWhiteSpace == False and \
 				boolInName == False and \
 				boolInNumber == False and \
 				boolInString == False:
+				boolOpenToken = False
 				if strChar == '.': # could be a method; in which case, we open the token with a .
-					if intFlagMode == NAME:
+					if intFlagMode   == st.NAME:
+						boolOpenToken = True
+					elif intFlagMode == st.STRING:
+						boolOpenToken = True
+					elif intFlagMode == st.CLOSEPAREN:
+						boolOpenToken = True
+					else: # might be the beginning of a number...
+						boolHalt = False
+						if intIndex < intLineLen-1: # if room to lookahead
+							if not isNumeric(strLine[intIndex+1]): # and not number
+								boolHalt = True
+						else: # period at end of line
+							boolHalt = True
+						if boolHalt:
+							print 'stray "." character in line '+str(intLineNumber)
+							pfail(intIndex,intLineNumber,strLine)
+							tokenReader(listTokenClasses)
+							print str(listTokens)
+							raise SystemExit
+					if boolOpenToken:
 						strToken = strChar
 						strChar = ''
 						intFlagMode = -1
-					elif intFlagMode == STRING:
-						strToken = strChar
-						strChar = ''
-						intFlagMode = -1
-					elif intFlagMode == CLOSEPAREN:
-						strToken = strChar
-						strChar = ''
-						intFlagMode = -1
-					else:
-						print 'stray "." character in line '+str(intLineNumber)
-						pfail(intIndex,intLineNumber,strLine)
-						tokenReader(listTokenClasses)
-						print str(listTokens)
-						raise SystemExit
 				
-				elif strChar == '(':	# these have to tokenize immediately because they could be last
-					listTokenClasses += [OPENPAREN]
-					listTokens += [strChar]
-					intLastMode = OPENPAREN
-					strChar = ''
-				elif strChar == ')':
-					listTokenClasses += [CLOSEPAREN]
-					listTokens += [strChar]
-					intLastMode = CLOSEPAREN
-					intFlagMode = CLOSEPAREN
-					strChar = ''
-				elif strChar == '{':
-					listTokenClasses += [OPENBRACE]
-					listTokens += [strChar]
-					intLastMode = OPENBRACE
-					strChar = ''
-				elif strChar == '}':
-					listTokenClasses += [CLOSEBRACE]
-					listTokens += [strChar]
-					intLastMode = CLOSEBRACE
-					strChar = ''
-				elif strChar == '[':
-					listTokenClasses += [OPENSQUARE]
-					listTokens += [strChar]
-					intLastMode = OPENSQUARE
-					strChar = ''
-				elif strChar == ']':
-					listTokenClasses += [CLOSESQUARE]
-					listTokens += [strChar]
-					intLastMode = CLOSESQUARE
-					strChar = ''
-				elif strChar == '=':
-					listTokenClasses += [EQUALS]
-					listTokens += [strChar]
-					intLastMode = EQUALS
-					strChar = ''
-				elif strChar == ':':
-					listTokenClasses += [COLON]
-					listTokens += [strChar]
-					intLastMode = COLON
-					strChar = ''
-				elif strChar == '!':
-					listTokenClasses += [SPLAT]
-					listTokens += [strChar]
-					intLastMode = SPLAT
-					strChar = ''
-				elif strChar == ';':
-					listTokenClasses += [SEMICOLON]
-					listTokens += [strChar]
-					intLastMode = SEMICOLON
-					strChar = ''
-				elif strChar == ',':
-					listTokenClasses += [COMMA]
-					listTokens += [strChar]
-					intLastMode = COMMA
-					strChar = ''
-				
-				elif strChar == '"' or strChar == "'":
+				# Now we look to see if we need to start to
+				# accumulate multi-character tokens: strings,
+				# whitespace, names, numbers:
+				# -------------------------------------------
+				elif strChar == '"' or strChar == "'": # starting string
 					intInToken = True
 					boolInString = True
 					strInString = strChar
 					strToken = strChar
 					strChar = ''
-				elif isWhiteSpace(strChar):
+				elif isWhiteSpace(strChar):				# starting whitespace
 					boolInToken = True
 					boolInWhiteSpace = True
 					strToken = strChar
 					strChar = ''
-				elif isLegalNameStart(strChar):
+				elif isLegalNameStart(strChar):			# starting name
 					boolInToken = True
 					boolInName = True
 					strToken += strChar
-					intFlagMode = NAME
-					intLastMode = NAME
+					intFlagMode = st.NAME
+					intLastMode = st.NAME
 					strChar = ''
-				elif isNumeric(strChar):
+				elif isNumeric(strChar):				# starting number
 					boolInToken = True
 					boolInNumber = True
-					intLastMode = NUMBER
+					intLastMode = st.NUMBER
 					strToken += strChar
 					strChar = ''
-				else: # no idea... dump out with indicator
-					pfail(intIndex,intLineNumber,strLine)
-					raise SystemExit
+
+				# Not a multi-character token, so check
+				# for single character tokens:
+				# -------------------------------------
+				else:
+					boolTokHit = False
+					for listTok in listSingTok:
+						strTok = listTok[0]
+						intTok = listTok[1]
+						if strChar == strTok:
+							listTokenClasses += [intTok]
+							listTokens += [strChar]
+							intLastMode = intTok
+							strChar = ''
+							boolTokHit = True
+							break
+
+					# If whatever this is hasn't been ID'd yet,
+					# it's probably something I missed tokenizing,
+					# and so I need to know about it. Fail here
+					# with enough info to find it:
+					# -------------------------------------------
+					if not boolTokHit:
+						pfail(intIndex,intLineNumber,strLine)
+						raise SystemExit
+
+			# This else happens when the tokenizer is
+			# accumulating one of a string, whitespace,
+			# a name, or a number:
+			# -----------------------------------------
 			else: # we're accumulating something
-				if boolInString:
-					if strLastChar != '\\':
+				if boolInString:	# accumulating a string?
+					if strLastChar != '\\': # only test non-escaped chars
+
+						# strings terminate depending on how they
+						# were opened: single and double quotes
+						# must match so they can be embedded in
+						# each other:
+						# -----------------------------------------------
 						if	(strInString == '"' and strChar == '"') or \
 							(strInString == "'" and strChar == "'"):
 							strToken += strChar
@@ -228,16 +255,17 @@ def tokenizer(strLine,intLineNumber):
 							strToken = ''
 							boolInToken = False
 							boolInString = False
-							intLastMode = STRING
-							intFlagMode = STRING
-							listTokenClasses += [STRING]
+							intLastMode = st.STRING
+							intFlagMode = st.STRING
+							listTokenClasses += [st.STRING]
 						else:
 							strToken += strChar
 							strChar = ''
 					else: # we accept backslash anything
 						strToken += strChar
 						strChar = ''
-				elif boolInWhiteSpace:
+
+				elif boolInWhiteSpace:			# accumulating whitespace?
 					if isWhiteSpace(strChar):
 						strToken += strChar
 						strChar = ''
@@ -246,9 +274,10 @@ def tokenizer(strLine,intLineNumber):
 						strToken = ''
 						boolInToken = False
 						boolInWhiteSpace = False
-						intLastMode = WHITESPACE
-						listTokenClasses += [WHITESPACE]
-				elif boolInName:
+						intLastMode = st.WHITESPACE
+						listTokenClasses += [st.WHITESPACE]
+
+				elif boolInName:				# accumulating a name?
 					if isLegalNamePastStart(strChar):
 						strToken += strChar
 						strChar = ''
@@ -257,9 +286,10 @@ def tokenizer(strLine,intLineNumber):
 						strToken = ''
 						boolInName = False
 						boolInToken = False
-						intLastMode = NAME
-						listTokenClasses += [NAME]
-				elif boolInNumber:
+						intLastMode = st.NAME
+						listTokenClasses += [st.NAME]
+
+				elif boolInNumber:				# accumulating a number?
 					if isNumeric(strChar):
 						strToken += strChar
 						strChar = ''
@@ -268,9 +298,9 @@ def tokenizer(strLine,intLineNumber):
 						strToken = ''
 						boolInToken = False
 						boolInNumber = False
-						intLastMode = NUMBER
-						listTokenClasses += [NUMBER]
-				else:
+						intLastMode = st.NUMBER
+						listTokenClasses += [st.NUMBER]
+				else: # shouldn't get here, but...
 					print 'unknown parsing state!'
 					raise SystemExit
 		strLastChar = strChar
@@ -324,18 +354,18 @@ def pass1(intLineNumber,strLine,fhFilehandle=None):
 		listMethods += [strMethodName]
 
 def reTokenize(listTokens,listClasses,listMethods):
-	global NUMBER,STRING,WHITESPACE,NAME,COMMA,OPENPAREN,CLOSEPAREN,EQUALS,OPENBRACE,CLOSEBRACE,OPENSQUARE,CLOSESQUARE,COLON,SEMICOLON,SPLAT
+	global st
 	intLength = len(listTokens)
 	if intLength < 2: return listTokens
 	for i in range(1,intLength):
 		for strMethod in listMethods:
 			tok = listTokens[i]
-			if listClasses[i] == NAME:
+			if listClasses[i] == st.NAME:
 				#           i
 				#      3    4      56   78   9
 				#  in: 'foo'.method(parm,parm)
 				#  in: 'foo'.method()
-				if listClasses[i-1] == STRING:	# this block only deals with basic strings
+				if listClasses[i-1] == st.STRING:	# this block only deals with basic strings
 					if intLength - i > 1: # ensure there is room to lookahead
 						if tok == '.'+strMethod:	# out: method('foo',parm,parm)
 							tmp = listTokens[i-1]				# capture string
@@ -348,7 +378,7 @@ def reTokenize(listTokens,listClasses,listMethods):
 				#      34      56   78   9
 				#  in: x.method(parm,parm)
 				#  in: x.method()
-				elif listClasses[i-1] == NAME:	# this block deals with variable names
+				elif listClasses[i-1] == st.NAME:	# this block deals with variable names
 					if intLength - i > 1: # ensure there is room to lookahead
 						if tok == '.'+strMethod:	# out: method('foo',parm,parm)
 							tmp = listTokens[i-1]				# capture name
@@ -364,14 +394,14 @@ def reTokenize(listTokens,listClasses,listMethods):
 				#                                               i
 				#   0     1    2    3    4    5       6    7    8         9    10
 				# ['\t', 'x', ' ', '=', ' ', 'meth', '(', ')', '.test2', '(', ')']
-				elif listClasses[i-1] == CLOSEPAREN:	# this block deals with function().method()
+				elif listClasses[i-1] == st.CLOSEPAREN:	# this block deals with function().method()
 					if intLength - i > 1:				# ensure there is room to lookahead
 						if tok == '.'+strMethod:
 							intPCount = 1
 							j = i-2
 							while j > 0 and intPCount != 0:
-								if listClasses[j] == CLOSEPAREN: intPCount += 1
-								elif listClasses[j] == OPENPAREN: intPCount -= 1
+								if listClasses[j] == st.CLOSEPAREN: intPCount += 1
+								elif listClasses[j] == st.OPENPAREN: intPCount -= 1
 								if intPCount != 0:
 									j -= 1 # walk back
 							if intPCount == 0: # parens are now balanced
@@ -418,10 +448,16 @@ def pass2(intLineNumber,strLine,fhWriteFile):
 				if hit == 0:
 					fhWriteFile.write(strLine+'\n')
 				else:
+					strBlank = ''
+					if boolBlankLines:
+						strBlank = '\n'
 					strNewLine = parseOutMethod(strLine,listMethods,intLineNumber)
 					if boolCommentSource:
-						fhWriteFile.write('# '+strLine+'\n')
+						fhWriteFile.write(strBlank+'# '+strLine+'\n')
 					fhWriteFile.write(strNewLine+'\n')
+					if boolVerbose:
+						print strBlank+'# '+strLine
+						print strNewLine
 					
 			except Exception,e:
 				print str(intLineNumber) +': '+ str(e)
@@ -457,10 +493,14 @@ def help(strName):
 	print '[ -c] unmodified source lines as comments in output'
 	print '[ -r] report setup before processing'
 	print '[ -x] do not process (intended for use with [ -r])'
+	print '[ -v] verbose output of each extended translation'
 	raise SystemExit
 
-# Code Execution Begins here (other than setting up the globals up top)
-# ---------------------------------------------------------------------
+# ===================================================================== #
+# --------------------------------------------------------------------- #
+# Code Execution Begins here (other than setting up the globals up top) #
+# --------------------------------------------------------------------- #
+# ===================================================================== #
 
 # Basic argument sanity checking
 # ------------------------------
@@ -490,6 +530,10 @@ for i in range(1,argc):
 			boolDoNotProcess = True
 		elif strParm == '-e':
 			boolReportMethods = True
+		elif strParm == '-v':
+			boolVerbose = True
+		elif strParm == '-b':
+			boolBlankLines = True
 		elif strParm == '-c':
 			boolCommentSource = True
 		elif strParm == '-p':
@@ -511,14 +555,16 @@ if strSourceFile[:-5] == '':
 	error(3,strSourceFile)
 
 if boolReportSetup:
-	print '    args:'+str(sys.argv)
-	print '  source:'+strSourceFile
-	print '    dest:'+strWriteFileName
-	print '  method:'+str(boolReportMethods)
-	print '  passes:'+str(boolReportPasses)
-	print 'comments:'+str(boolCommentSource)
-	print '  report:'+str(boolReportSetup)
-	print '    stop:'+str(boolDoNotProcess)
+	print '       args:'+str(sys.argv)
+	print '     source:'+strSourceFile
+	print '       dest:'+strWriteFileName
+	print '     method:'+str(boolReportMethods)
+	print '     passes:'+str(boolReportPasses)
+	print '   comments:'+str(boolCommentSource)
+	print '     report:'+str(boolReportSetup)
+	print '       stop:'+str(boolDoNotProcess)
+	print '    verbose:'+str(boolVerbose)
+	print ' blanklines:'+str(boolBlankLines)
 
 if boolDoNotProcess:
 	raise SystemExit

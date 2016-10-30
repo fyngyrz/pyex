@@ -1,7 +1,9 @@
 # [pyex](pyex.py) -- Allows for methods that can be used with class str, etc.
 
-TLDR: It's a preprocessor. You write the way you want, then it makes Python
-like Python wants.
+## TLDR:
+It's a preprocessor. You write the way you want, then it makes Python
+like Python wants. It's a Python v2 project. A v3 Python version, if you want
+it, is up to you.
 
 This project grew, somewhat indirectly, from my annoyance with Python that it
 does not provide the ability to extend the built-in classes, particularly
@@ -109,15 +111,15 @@ Most particularly, string.
  Disclaimers: 1) Probably completely broken. Do Not Use. You were explicitly warned. Phbbbbt.
               2) My code is blackbox, meaning I wrote it without reference to other people's code
               3) I can't check other people's contributions effectively, so if you use any version
-                 of aa_macro.py that incorporates accepted commits from others, you are risking
+                 of pyex.py that incorporates accepted commits from others, you are risking
                  the use of OPC, which may or may not be protected by copyright, patent, and the
                  like, because our intellectual property system is pathological. The risks and
                  responsibilities and any subsequent consequences are entirely yours. Have you
                  written your congresscritter about patent and copyright reform yet?
   Incep Date: October 29th, 2016     (for Project)
- Last Update: October 29th, 2016     (for Project)
+ Last Update: October 30th, 2016     (for Project)
      Dev Env: OS X 10.6.8, Python 2.6.1
-	  Status:  BETA
+	  Status: BETA
 ```
 
 ## Files
