@@ -107,6 +107,7 @@ pyex.py is working at least as well for you as it does for me. If they
 do _not_ match, a list of the differences will be provided and a warning
 generated.
 
+## Project Details
 ```
 Application to provide extended Python syntax for methods on built-in classes
 Most particularly, string.
