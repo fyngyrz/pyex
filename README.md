@@ -1,6 +1,6 @@
 # [pyex](pyex.py) -- Allows for methods that can be used with class str, etc.
 
-## TLDR:
+## TLDR
 It's a preprocessor. You write the way you want, then it makes Python
 like Python wants. It's a Python v2 project. A v3 Python version, if you want
 it, is up to you.
@@ -10,7 +10,7 @@ This project grew, somewhat indirectly, from my annoyance with Python that it
 does not provide the ability to extend the built-in classes, particularly
 the string class. I have often wanted to just do something to a string as a
 method, mainly -- and I know this is a simple thing, but -- mainly because
-I think this way...
+I consistently tend to think this way...
 
     x = 'foo'.upper()
 
@@ -20,7 +20,7 @@ I think this way...
 
 I've had some discussions with some really well-informed Python types,
 and they all assure me that you simply can't extend the built-in classes
-without taking the risk of actually breaking the Python interpreter.
+without incurring a risk of actually breaking the Python interpreter.
 Well. _That_ was bad news.
 
 But eventually \(I'm old and slowing down a lot\) it dawned on me that
@@ -28,7 +28,7 @@ even if it was impossible in Python, who says it has to _be_ Python?
 There's a ton of functionality in the C language that comes from a
 preprocessor; why not a preprocessor for Python?
 
-And so pyex was born.
+And so... pyex.
 
 pyex means `Python, Extended` and that's exactly what it is. You write
 using pyex syntax -- which is exactly the same as Python syntax --
@@ -39,7 +39,7 @@ object it is written to understand.
 
 The second is that you declare this with a tiny bit of new syntax.
 
-Here's a for instance. Say you have a method that takes a string object
+Here's a for-instance. Say you have a method that takes a string object
 and validates that it is a dotted quad and you want to be able to use it
 as a method on strings. Here's what you write:
 
@@ -88,9 +88,9 @@ examine the metamorphosis from pyex to Python.
 
 Basically that's it. pyex by itself will generate help text.
 
-Here are some examples of use:
+## Example Use
 
-| You Type | This Happens |
+| Console input | Result |
 | -------- | ------------ |
 | pyex myStuff | myStuff.pyex --> myStuff.py |
 | pyex myStuff.pyex | myStuff.pyex --> myStuff.py |
@@ -99,6 +99,13 @@ Here are some examples of use:
 | pyex myStuff.pyex -o hisStuff.py | myStuff.pyex --> hisStuff.py |
 | pyex myStuff -c | myStuff.pyex --> myStuff.py + your code inserted as comments in myStuff.py |
 | pyex | You get a bunch of help about the options |
+
+## Testing
+Executing `test_pyex.py` will generate `pyextest.py` from `pyextest.pyex`
+and compare the result with `expected.py`. If the results match, then
+pyex.py is working at least as well for you as it does for me. If they
+do _not_ match, a list of the differences will be provided and a warning
+generated.
 
 ```
 Application to provide extended Python syntax for methods on built-in classes
@@ -129,3 +136,5 @@ Most particularly, string.
 * pyextest.pyex -- a test file you can run through pyex.py
 * pyex.syntax -- a syntax file for Midnite Commander
 * README.md -- this file
+* test_pyex.py -- unit test
+* expected.py -- base result for successful unit test

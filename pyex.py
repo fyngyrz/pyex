@@ -77,11 +77,15 @@ def tokenClasser(intToken):
 	return 'unknownTokenType'
 
 def isWhiteSpace(strChar):
-	if strChar in '\t\n\r ': return True
+	if strChar in '\t\n\r\f ': return True
 	return False
 
-def isNumeric(strChar):
+def isNumericStart(strChar): # starting with a '.' is treated analytically
 	if strChar in '0123456789': return True
+	return False
+
+def isNumeric(strChar): # ints, hex/oct/bin, floats
+	if strChar.upper() in '0123456789OXABCDEFL+-': return True
 	return False
 
 def isLegalNameStart(strChar):
@@ -165,7 +169,7 @@ def tokenizer(strLine,intLineNumber):
 					else: # might be the beginning of a number...
 						boolHalt = False
 						if intIndex < intLineLen-1: # if room to lookahead
-							if not isNumeric(strLine[intIndex+1]): # and not number
+							if not isNumericsStart(strLine[intIndex+1]): # and not number
 								boolHalt = True
 						else: # period at end of line
 							boolHalt = True
@@ -202,7 +206,7 @@ def tokenizer(strLine,intLineNumber):
 					intFlagMode = st.NAME
 					intLastMode = st.NAME
 					strChar = ''
-				elif isNumeric(strChar):				# starting number
+				elif isNumericStart(strChar):			# starting number
 					boolInToken = True
 					boolInNumber = True
 					intLastMode = st.NUMBER
