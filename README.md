@@ -106,7 +106,7 @@ I often edit Python \(and now, `pyex`\) in Midnight Commander's
 highlighting file for `.pyex` files \(`pyex.syntax`\) for this editor by
 taking the Python syntax file and adding the `extend` keyword. If you
 are going to use `pyex`, I think you'll find it useful to implement a
-syntax file for yoar editor as well, and most likely, you can do what I
+syntax file for your editor as well, and most likely, you can do what I
 did -- grab the Python syntax, modify it by adding one keyword, assign
 the result to `pyex`, and done.
 
