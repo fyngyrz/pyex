@@ -7,16 +7,15 @@ extended Python, then `pyex.py` processes that into Python in the actual
 form Python wants, all without monkeypatching or otherwise compromising
 execution reliability.
 
-This is a Python v2 project. A v3 Python version, if you want it, is up
-to you at this point.
+This is a Python v2 project.
 
 ## Somewhat More Verbosely
 
-This project grew indirectly from my annoyance with Python that it does
-not provide the ability to extend the built-in classes, particularly the
-string class. I have often wanted to just do something to a string as a
-method, mainly -- and I know this is a simple thing, but -- mainly
-because I consistently tend to think this way...
+This project grew indirectly from my annoyance with Python's inability to
+extend the built-in classes, particularly the string class. I have often
+wanted to just do something to a string as a method, mainly &mdash; and I know
+this is a simple thing, but &mdash; mainly because I consistently tend to think
+this way...
 
     x = 'foo'.upper()
 
@@ -29,16 +28,15 @@ and they all assure me that you simply can't extend the built-in classes
 without incurring a risk of actually breaking the Python interpreter.
 Well. _That_ was bad news.
 
-But eventually \(I'm old and slowing down a lot\) it dawned on me that
-even if it was impossible in Python, who says it has to _be_ Python?
-There's a ton of functionality in the C language that comes from a
-preprocessor; why not a preprocessor for Python?
+But eventually it dawned on me that even if it was impossible in Python,
+who says it has to _be_ Python? There's a ton of functionality in the C
+language that comes from a preprocessor; why not a preprocessor for Python?
 
 And so... `pyex`.
 
 `pyex` means `Python, Extended` and that's exactly what it is. You write
-using `pyex` syntax -- which is exactly the same as Python syntax --
-except for two "little" things.
+using `pyex` syntax &mdash; which is exactly the same as Python syntax &mdash;
+except for two things.
 
 The first is that you can write a method and attach it to any class
 object it is written to understand.
@@ -107,7 +105,7 @@ highlighting file for `.pyex` files \(`pyex.syntax`\) for this editor by
 taking the Python syntax file and adding the `extend` keyword. If you
 are going to use `pyex`, I think you'll find it useful to implement a
 syntax file for your editor as well, and most likely, you can do what I
-did -- grab the Python syntax, modify it by adding one keyword, assign
+did &mdash; grab the Python syntax, modify it by adding one keyword, assign
 the result to `pyex`, and done.
 
 ## Example Use
@@ -151,8 +149,8 @@ Most particularly, string.
     Homepage: https://github.com/fyngyrz/pyex
      License: None. It's free. *Really* free. Defy invalid social and legal norms.
  Disclaimers: 1) Probably completely broken. Do Not Use. You were explicitly warned. Phbbbbt.
-              2) My code is blackbox, meaning I wrote it without reference to other people's code
-              3) I can't check other people's contributions effectively, so if you use any version
+              2) This code is blackbox, meaning I wrote it without reference to other people's code
+              3) I can't check other people's forks effectively, so if you use any other version
                  of pyex.py that incorporates accepted commits from others, you are risking
                  the use of OPC, which may or may not be protected by copyright, patent, and the
                  like, because our intellectual property system is pathological. The risks and
