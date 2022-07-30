@@ -1,4 +1,4 @@
-# [pyex](pyex.py) -- Allows for methods that can be used with class str, etc.
+# [pyex](pyex.py) &mdash; Allows for methods that can be used with class str, etc.
 
 ## TLDR
 
